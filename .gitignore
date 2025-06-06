@@ -1,14 +1,14 @@
-./client/Vinsta/node_modules/
-./client/Vinsta/.expo/
-./client/Vinsta/dist/
-./client/Vinsta/npm-debug.*
-./client/Vinsta/*.jks
-./client/Vinsta/*.p8
-./client/Vinsta/*.p12
-./client/Vinsta/*.key
-./client/Vinsta/*.mobileprovision
-./client/Vinsta/*.orig.*
-./client/Vinsta/web-build/
+./client/node_modules/
+./client/.expo/
+./client/dist/
+./client/npm-debug.*
+./client/*.jks
+./client/*.p8
+./client/*.p12
+./client/*.key
+./client/*.mobileprovision
+./client/*.orig.*
+./client/web-build/
 
 
 
