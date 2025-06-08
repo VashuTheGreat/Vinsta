@@ -6,12 +6,17 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 
+
+const CLOUD_NAME = 'dg8roe123'; // ✅ Replace with your cloud name
+const UPLOAD_PRESET = 'unsigned_preset'; // ✅ Replace with your preset
 
 
 const InstagramProfileHeader = () => {
@@ -20,6 +25,13 @@ const InstagramProfileHeader = () => {
     const [followers,setfollowers]=useState(0);
     const [following,setfollowings]=useState(0);
       const [imageUri, setImageUri] = useState<string | null>(null);
+
+  const [videoUri, setVideoUri] = useState<string | null>(null);
+  const [upload,setUpload]=useState(false);
+
+
+
+  const [userReels, setUserReels] = useState<any[]>([]);
       
 
 
@@ -44,6 +56,91 @@ const InstagramProfileHeader = () => {
     }
   };
 
+
+
+
+
+  
+  // try {
+  //   const response = await fetch('http://192.168.153.207:3000/local_video_uri', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ uri: videoUri }),
+  //   });
+
+  //   const data = await response.json();
+  //   console.log('Server Response:', data);
+  //   alert('Upload request sent successfully!');
+  // } catch (error) {
+  //   console.error('Error sending video path:', error);
+  //   alert('Failed to send video path to server');
+  // }
+
+const handlePickVideo = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'video/*',
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const pickedUri = result.assets[0].uri;
+        console.log('📼 Selected Video URI:', pickedUri);
+        setVideoUri(pickedUri);
+
+        // Upload to Cloudinary
+        const formData = new FormData();
+        formData.append('file', {
+          uri: pickedUri,
+          type: 'video/mp4',
+          name: 'upload.mp4',
+        } as any);
+        formData.append('upload_preset', UPLOAD_PRESET);
+
+        console.log("📤 Uploading to Cloudinary...");
+
+        setUpload(true);
+
+        const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+        setUpload(false);
+
+        const cloudinaryData = await cloudinaryRes.json();
+        console.log("✅ Cloudinary response:", cloudinaryData);
+
+        if (cloudinaryData.secure_url) {
+          Alert.alert('✅ Uploaded!', cloudinaryData.secure_url);
+
+          // Send to your server
+          const serverRes = await fetch('http://192.168.153.207:3000/local_video_uri', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uri: cloudinaryData.secure_url }),
+          });
+
+          const serverData = await serverRes.json();
+          console.log("📡 Server response:", serverData);
+        } else {
+          Alert.alert("❌ Upload failed", JSON.stringify(cloudinaryData));
+        }
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      Alert.alert("Error", err instanceof Error ? err.message : 'An unknown error occurred');
+    }
+  };
+
+const fetchUserReels = async (userId: number) => {
+  const res = await fetch(`http://192.168.153.207:3000/me?id=${userId}`);
+  const data = await res.json();
+  console.log(data.reels); // All videos for user with ID = userId
+setUserReels(data.reels.map((item: any) => item.media_url));
+};
+
+// fetchUserReels(1);
 
     useEffect(() => {
     const fetchData = async () => {
@@ -151,7 +248,7 @@ source={{
               <View className="flex-row">
                 {/* New Story Highlight */}
                 <View className="items-center mr-4">
-                  <TouchableOpacity className="w-14 h-14 rounded-full border-2 border-gray-300 items-center justify-center bg-gray-50">
+                  <TouchableOpacity className="w-14 h-14 rounded-full border-2 border-gray-300 items-center justify-center bg-gray-50" onPress={handlePickVideo}>
                     <Ionicons name="add" size={24} color="gray" />
                   </TouchableOpacity>
                   <Text className="text-xs text-gray-400 mt-1">New</Text>
@@ -170,6 +267,7 @@ source={{
           </View>
         </View>
       </ScrollView>
+      
     </SafeAreaView>
   );
 };

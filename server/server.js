@@ -2,27 +2,27 @@ const mysql = require('mysql2/promise');
 const http = require('http');
 const url = require('url');
 
-require('dotenv').config();
-const cloudinary = require('cloudinary').v2;
+// require('dotenv').config();
+// const cloudinary = require('cloudinary').v2;
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
+// cloudinary.config({
+//   cloud_name: process.env.CLOUD_NAME,
+//   api_key: process.env.API_KEY,
+//   api_secret: process.env.API_SECRET,
+// });
 
-const uploadToCloudinary = async (videoPath) => {
-  try {
-    console.log('uplauding...');
-    const result = await cloudinary.uploader.upload(videoPath, {
-      resource_type: 'video',
-    });
-    console.log("Uploaded URL:", result.secure_url);
-    return result.secure_url;
-  } catch (err) {
-    console.error("Upload failed:", err);
-  }
-};
+// const uploadToCloudinary = async (videoPath) => {
+//   try {
+//     console.log('uplauding...');
+//     const result = await cloudinary.uploader.upload(videoPath, {
+//       resource_type: 'video',
+//     });
+//     console.log("Uploaded URL:", result.secure_url);
+//     return result.secure_url;
+//   } catch (err) {
+//     console.error("Upload failed:", err);
+//   }
+// };
 
 // 👇 Call this only after everything is configured
 // uploadToCloudinary("C:\\Users\\Asus\\Videos\\Captures\\javaInOneShot – Intro.java 2024-11-15 08-42-42.mp4");
@@ -147,8 +147,8 @@ else if (req.method === 'POST' && req.url === '/local_video_uri') {
         throw new Error("Missing 'uri' in request body");
       }
 
-      const url1 = await uploadToCloudinary(videoUri); // ❗️Fix: await this
-     await setUrlToSQL(1,'video',url1);  // You might want to `await` this too if it's async
+      // const url1 = await uploadToCloudinary(videoUri); // ❗️Fix: await this
+     await setUrlToSQL(1,'video',videoUri);  // You might want to `await` this too if it's async
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ message: 'Video uploaded successfully', cloud_url: url1 }));
@@ -158,7 +158,80 @@ else if (req.method === 'POST' && req.url === '/local_video_uri') {
       res.end(JSON.stringify({ error: 'Invalid JSON or upload error' }));
     }
   });
+
+  
 }
+
+else if (req.method === 'GET' && req.url.startsWith('/reels')) {
+    const parsed = url.parse(req.url, true);
+    const page = parseInt(parsed.query.page || '1');
+    const limit = 5;
+    const offset = (page - 1) * limit;
+
+    try {
+      const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'Vansh@1234mysql',
+        database: 'user_branch',
+      });
+
+      const [rows] = await connection.query(
+        `SELECT * FROM media WHERE media_type = 'video' ORDER BY id DESC LIMIT ? OFFSET ?`,
+        [limit, offset]
+      );
+
+      const [countRows] = await connection.query(`SELECT COUNT(*) AS count FROM media WHERE media_type='video'`);
+      const totalCount = countRows[0].count;
+      const hasMore = offset + rows.length < totalCount;
+
+      await connection.end();
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ reels: rows, hasMore }));
+    } catch (err) {
+      console.error('Error in GET /reels:', err);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+    }
+  } 
+else if (req.method === 'GET' && req.url.startsWith('/me')) {
+  const parsed = url.parse(req.url, true);
+  const id = parseInt(parsed.query.id || '1');
+
+  try {
+    const connection = await mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: 'Vansh@1234mysql',
+      database: 'user_branch',
+    });
+
+    // Fetch all videos where user_id = id
+    const [rows] = await connection.query(
+      `SELECT * FROM media WHERE media_type = 'video' AND user_id = ?`,
+      [id]
+    );
+
+    // Count total videos for this user
+    const [countRows] = await connection.query(
+      `SELECT COUNT(*) AS count FROM media WHERE media_type = 'video' AND user_id = ?`,
+      [id]
+    );
+
+    const totalCount = countRows[0].count;
+
+    await connection.end();
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ reels: rows, count: totalCount }));
+  } catch (err) {
+    console.error('Error in GET /me:', err);
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Internal server error' }));
+  }
+}
+
 
   
   
