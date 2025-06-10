@@ -7,17 +7,53 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import { VideoView,useVideoPlayer } from 'expo-video';
+import { useEvent } from 'expo';
 
 
 const CLOUD_NAME = 'dg8roe123'; // ✅ Replace with your cloud name
 const UPLOAD_PRESET = 'unsigned_preset'; // ✅ Replace with your preset
 
+const { height,width  } = Dimensions.get('window');
+
+
+
+
+
+ const VideoItem = ({ src }: { src: string }) => {
+  const player = useVideoPlayer(src, (player) => {
+    player.loop = true;
+    player.play(); // Start playing when full screen
+  });
+
+  return (
+    <VideoView
+      style={{ width: width, height: height }}
+      player={player}
+      allowsFullscreen
+      allowsPictureInPicture
+    />
+  );
+};
+
+
+
+const countries = [
+  { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+  { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+  { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" },
+  { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+  { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+  { src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" },
+]
 
 const InstagramProfileHeader = () => {
     const [name,setname]=useState("a");
@@ -28,11 +64,25 @@ const InstagramProfileHeader = () => {
 
   const [videoUri, setVideoUri] = useState<string | null>(null);
   const [upload,setUpload]=useState(false);
+  const [view,setView]=useState(false);
+
+
+  // const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
 
 
 
   const [userReels, setUserReels] = useState<any[]>([]);
-      
+
+
+  
+
+
+  const handleView=()=>{
+    if(view===true) setView(false);
+    else setView(true);
+    console.log('view: ',view);
+  }
+       
 
 
 
@@ -139,6 +189,10 @@ const fetchUserReels = async (userId: number) => {
   console.log(data.reels); // All videos for user with ID = userId
 setUserReels(data.reels.map((item: any) => item.media_url));
 };
+
+
+
+
 
 // fetchUserReels(1);
 
@@ -264,13 +318,47 @@ source={{
                 <MaterialIcons name="grid-on" size={24} color="gray" />
               </TouchableOpacity>
             </View>
+     
           </View>
         </View>
       </ScrollView>
+   
+
+
+<View>
+  {view === false ? (
+    <FlatList
+      data={countries}
+      numColumns={2}
+      keyExtractor={(_, index) => index.toString()}
+      style={{ height: 400 }}
+      renderItem={({ item }) => (
+        <TouchableOpacity onPress={() => setView(true)} style={{ flex: 1, margin: 8 }}>
+          <Image
+            source={{
+              uri:
+                'https://imgs.search.brave.com/HWrggDgnmyba4GrFiS765rROwhiKnMqAIskDPTBP5Gg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNTIw/MjYwMzY3L3Bob3Rv/L21hbi1ob2xkaW5n/LW1vYmlsZS1zbWFy/dC1waG9uZS5qcGc_/cz02MTJ4NjEyJnc9/MCZrPTIwJmM9Um85/U016Qm1EV0JlcVdO/NERsajN4amJhQjRI/bzNXd3daM3RycGd2/ajZYcz0',
+            }}
+            style={{ width: '100%', height: 180, borderRadius: 8 }}
+            resizeMode="cover"
+          />
+        </TouchableOpacity>
+      )}
+    />
+  ) : (
+    <FlatList
+      key={'video'} // ✅ different key
+      data={countries}
+      keyExtractor={(_, index) => index.toString()}
+      renderItem={({ item }) => <VideoItem src={item.src} />}
+      pagingEnabled
+    />
+  )}
+</View>
+
       
     </SafeAreaView>
-  );
-};
+  );};
 
 export default InstagramProfileHeader;
 
