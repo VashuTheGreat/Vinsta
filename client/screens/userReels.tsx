@@ -70,7 +70,7 @@ export default function ProfileScreen() {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
     try {
-      const res = await fetch(`http://192.168.153.207:3000/reels?page=${page}`);
+      const res = await fetch(`http://192.168.153.207:3000/UserReels?page=${page}`);
       const data = await res.json();
       setReels(prev => [...prev, ...data.reels]);
       setPage(prev => prev + 1);
@@ -89,13 +89,10 @@ export default function ProfileScreen() {
           const parsed: UserData = JSON.parse(data);
           if (parsed?.usernameOrEmail && parsed?.password) {
             setUserData(parsed);
-            navigation.replace('dsb');
           } else {
             navigation.replace('Login');
           }
-        } else {
-          navigation.replace('Login');
-        }
+        } 
       } catch (error) {
         console.error('Error reading from AsyncStorage:', error);
         navigation.replace('Login');

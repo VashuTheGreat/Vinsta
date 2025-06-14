@@ -10,6 +10,10 @@ import SignUpScreen from './screens/signUp';
 import MeScreen from "./screens/me";
 import Footer from './screens/Footer';
 import { View, StyleSheet } from 'react-native';
+import dashboard from 'screens/dashboard';
+import StoryView from 'screens/storyView';
+import ReelView from 'screens/reels'
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +41,9 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="signUP" component={SignUpScreen} />
             <Stack.Screen name="me" component={MeScreen} />
+            <Stack.Screen name="dsb" component={dashboard} />
+<Stack.Screen name="storyView" component={StoryView} />
+<Stack.Screen name="reels" component={ReelView} />
           </Stack.Navigator>
           {!hideFooterScreens.includes(currentRoute) && <Footer />}
         </>

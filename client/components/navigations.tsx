@@ -29,7 +29,16 @@ type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   me: undefined;
+  dsb: undefined;
+  storyView: { item: any };
+  reels:undefined;
+  // ...other routes
 };
+
+
+
+
+ 
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 

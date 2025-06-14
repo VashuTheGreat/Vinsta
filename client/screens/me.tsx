@@ -225,35 +225,37 @@ setUserReels(data.reels.map((item: any) => item.media_url));
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
-      <ScrollView className="flex-1">
+   <SafeAreaView className="flex-1 bg-white mt-4">
+      <ScrollView className="flex-1 mt-2">
         {/* Header Section */}
         <View className="px-4 pt-4">
           {/* Profile Info Row */}
           <View className="flex-row items-center justify-between mb-4">
             {/* Profile Photo */}
             <View className="relative">
-              <View className="w-20 h-20 rounded-full border-2 border-gray-200 items-center justify-center bg-gray-500">
+              <View className="w-20 h-20 rounded-full border-2 border-gray-800 items-center justify-center bg-gray-200">
                 <Image
-source={{
-  uri: imageUri
-    ? imageUri
-    : 'https://instagram.fsrg9-1.fna.fbcdn.net/v/t51.2885-19/464760996_1254146839119862_3605321457742435801_n.png?stp=dst-jpg_e0_s150x150_tt6&cb=8577c754-c2464923&_nc_ad=z-m&_nc_ht=instagram.fsrg9-1.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QGdxZl4P6lb3kxM28W39yiH-rA81bYpCkzd-EkRUZV8wiC9DlA7FyMDydr-LDnkpvY&_nc_ohc=jIDHd3d_O3YQ7kNvwHDvDrX&_nc_gid=N6_NpCFc5XBH4mijbe4b5w&edm=ALlQn9MBAAAA&ccb=7-5&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.3-ccb7-5-cb8577c754-c2464923&oh=00_AfMstY2BNqSR5Z8YE5dl7CsRQSoEd_bvlyVMJ9SM6yZjLQ&oe=6849D368&_nc_sid=e7f676'
-}}
+                  source={{
+                    uri: imageUri
+                      ? imageUri
+                      : 'https://instagram.fsrg9-1.fna.fbcdn.net/v/t51.2885-19/464760996_1254146839119862_3605321457742435801_n.png?...',
+                  }}
                   className="w-full h-full rounded-full"
                   resizeMode="cover"
                 />
-                {/* Camera Icon Overlay */}
-                <TouchableOpacity className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-full items-center justify-center" onPress={pickImage}>
-                  <Ionicons name="camera" size={12} color="white" />
+                <TouchableOpacity
+                  className="absolute -bottom-1 -right-1 w-6 h-6 bg-gray-200 rounded-full items-center justify-center"
+                  onPress={pickImage}
+                >
+                  <Ionicons name="camera" size={12} color="black" />
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Username and Options */}
-            <View className="flex-1 ml-4">
+            <View className="flex-1 ml-4 ">
               <View className="flex-row items-center justify-between">
-                <Text className="text-2xl font-semibold text-white">
+                <Text className="text-2xl font-semibold text-black">
                   {name}
                 </Text>
                 <TouchableOpacity className="p-2">
@@ -266,33 +268,26 @@ source={{
           {/* Stats Row */}
           <View className="flex-row justify-around mb-4 px-4">
             <View className="items-center">
-              <Text className="text-lg font-semibold text-white">{posts}</Text>
-              <Text className="text-sm text-gray-400">posts</Text>
+              <Text className="text-lg font-semibold text-black">{posts}</Text>
+              <Text className="text-sm text-gray-600">posts</Text>
             </View>
             <TouchableOpacity className="items-center">
-              <Text className="text-lg font-semibold text-white">{followers}</Text>
-              <Text className="text-sm text-gray-400">followers</Text>
+              <Text className="text-lg font-semibold text-black">{followers}</Text>
+              <Text className="text-sm text-gray-600">followers</Text>
             </TouchableOpacity>
             <TouchableOpacity className="items-center">
-              <Text className="text-lg font-semibold text-white">{following}</Text>
-              <Text className="text-sm text-gray-400">following</Text>
+              <Text className="text-lg font-semibold text-black">{following}</Text>
+              <Text className="text-sm text-gray-600">following</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Display Name */}
-          {/* <View className="mb-4">
-            <Text className="text-base font-semibold text-white">
-              Vansh Sharma
-            </Text>
-          </View> */}
-
           {/* Action Buttons */}
           <View className="flex-row mb-4 space-x-2">
-            <TouchableOpacity className="flex-1 bg-gray-500 py-2 px-4 rounded-lg items-center mr-2">
-              <Text className="text-white font-medium">Edit profile</Text>
+            <TouchableOpacity className="flex-1 bg-gray-200 py-2 px-4 rounded-lg items-center mr-2">
+              <Text className="text-black font-medium">Edit profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="flex-1 bg-gray-500 py-2 px-4 rounded-lg items-center">
-              <Text className="text-white font-medium">View archive</Text>
+            <TouchableOpacity className="flex-1 bg-gray-200 py-2 px-4 rounded-lg items-center">
+              <Text className="text-black font-medium">View archive</Text>
             </TouchableOpacity>
           </View>
 
@@ -302,61 +297,60 @@ source={{
               <View className="flex-row">
                 {/* New Story Highlight */}
                 <View className="items-center mr-4">
-                  <TouchableOpacity className="w-14 h-14 rounded-full border-2 border-gray-300 items-center justify-center bg-gray-50" onPress={handlePickVideo}>
-                    <Ionicons name="add" size={24} color="gray" />
+                  <TouchableOpacity
+                    className="w-14 h-14 rounded-full border-2 border-gray-600 items-center justify-center bg-white"
+                    onPress={handlePickVideo}
+                  >
+                    <Ionicons name="add" size={24} color="black" />
                   </TouchableOpacity>
-                  <Text className="text-xs text-gray-400 mt-1">New</Text>
+                  <Text className="text-xs text-gray-600 mt-1">New</Text>
                 </View>
               </View>
             </ScrollView>
           </View>
 
           {/* Posts Grid Placeholder */}
-          <View className="border-t border-gray-200 pt-4">
+          <View className="border-t border-gray-300 pt-4">
             <View className="flex-row justify-center">
               <TouchableOpacity className="items-center">
-                <MaterialIcons name="grid-on" size={24} color="gray" />
+                <MaterialIcons name="grid-on" size={24} color="black" />
               </TouchableOpacity>
             </View>
-     
           </View>
         </View>
       </ScrollView>
-   
 
-
-<View>
-  {view === false ? (
-    <FlatList
-      data={countries}
-      numColumns={2}
-      keyExtractor={(_, index) => index.toString()}
-      style={{ height: 400 }}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => setView(true)} style={{ flex: 1, margin: 8 }}>
-          <Image
-            source={{
-              uri:
-                'https://imgs.search.brave.com/HWrggDgnmyba4GrFiS765rROwhiKnMqAIskDPTBP5Gg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNTIw/MjYwMzY3L3Bob3Rv/L21hbi1ob2xkaW5n/LW1vYmlsZS1zbWFy/dC1waG9uZS5qcGc_/cz02MTJ4NjEyJnc9/MCZrPTIwJmM9Um85/U016Qm1EV0JlcVdO/NERsajN4amJhQjRI/bzNXd3daM3RycGd2/ajZYcz0',
-            }}
-            style={{ width: '100%', height: 180, borderRadius: 8 }}
-            resizeMode="cover"
+      {/* Post / Reels Section */}
+      <View>
+        {view === false ? (
+          <FlatList
+            data={countries}
+            numColumns={2}
+            keyExtractor={(_, index) => index.toString()}
+            style={{ height: 400 }}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => setView(true)} style={{ flex: 1, margin: 8 }}>
+                <Image
+                  source={{
+                    uri:
+                      'https://imgs.search.brave.com/HWrggDgnmyba4GrFiS765rROwhiKnMqAIskDPTBP5Gg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNTIw/MjYwMzY3L3Bob3Rv/L21hbi1ob2xkaW5n/LW1vYmlsZS1zbWFy/dC1waG9uZS5qcGc_/cz02MTJ4NjEyJnc9/MCZrPTIwJmM9Um85/U016Qm1EV0JlcVdO/NERsajN4amJhQjRI/bzNXd3daM3RycGd2/ajZYcz0',
+                  }}
+                  style={{ width: '100%', height: 180, borderRadius: 8 }}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            )}
           />
-        </TouchableOpacity>
-      )}
-    />
-  ) : (
-    <FlatList
-      key={'video'} // ✅ different key
-      data={countries}
-      keyExtractor={(_, index) => index.toString()}
-      renderItem={({ item }) => <VideoItem src={item.src} />}
-      pagingEnabled
-    />
-  )}
-</View>
-
-      
+        ) : (
+          <FlatList
+            key={'video'}
+            data={countries}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => <VideoItem src={item.src} />}
+            pagingEnabled
+          />
+        )}
+      </View>
     </SafeAreaView>
   );};
 

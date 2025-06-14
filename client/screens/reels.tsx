@@ -89,13 +89,10 @@ export default function ProfileScreen() {
           const parsed: UserData = JSON.parse(data);
           if (parsed?.usernameOrEmail && parsed?.password) {
             setUserData(parsed);
-            navigation.replace('dsb');
           } else {
             navigation.replace('Login');
           }
-        } else {
-          navigation.replace('Login');
-        }
+        } 
       } catch (error) {
         console.error('Error reading from AsyncStorage:', error);
         navigation.replace('Login');
