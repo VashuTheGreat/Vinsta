@@ -206,6 +206,29 @@ async setProfileImage({ id, profile_image }) {
 }
 
 
+
+    async updateUserInfoById({ id, col, val }) {
+    const allowedCols = ['media', 'abt_media', 'description ', 'likes', 'comments', 'type']; // ✅ only allow specific columns
+
+    if (!allowedCols.includes(col)) {
+        throw new Error("Invalid column name");
+    }
+
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'Vansh@1234mysql',
+        database: 'user_branch'
+    });
+
+    const query = `UPDATE Users_media SET ${col} = ? WHERE id = ?`;
+    const [result] = await connection.query(query, [val, id]);
+
+    await connection.end();
+    return result;
+}
+
+
 }
 
 const dbHandler = new handleDB();
@@ -270,7 +293,6 @@ app.post('/login',async (req,res)=>{
 
 
 app.delete('/delete-media/:id', async (req, res) => {
-    console.log("sjnfaloo")
     const mediaId=req.params.id;
 
 
